@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sundar.com</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 320px;
+        }
+
+        h2 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #result {
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Attendance Percentage Calculator</h2>
+        <label for="t">Total Classes</label>
+        <input type="number" placeholder="Enter total classes" id="t">
+        <br>
+        <label for="a">Total Attended Classes</label>
+        <input type="number" placeholder="Enter attended classes" id="a">
+        <br>
+        <button onclick="cal()">Calculate</button>
+        <p id="result"></p>
+        <p id="leave"></p>
+    </div>
+
+    <script>
+        function cal() {
+            let total = Number(document.getElementById("t").value);
+            let attended = Number(document.getElementById("a").value);
+            let results = document.getElementById("result");
+            let leave = document.getElementById("leave");
+
+            if (total < 1 || attended < 1 || total < attended) {
+                results.innerHTML = "⚠️ Please enter valid values!";
+                results.style.color = "red";
+                leave.innerHTML = "";
+                return;
+            }
+
+            let percentage = (attended / total) * 100;
+            let message = `Your attendance percentage is: <b>${percentage.toFixed(2)}%</b>%`;
+
+            if (percentage >= 80) {
+                message += "<br>✅ <b style='color: green;'>You have enough attendance!</b>";
+                results.style.color = "green";
+
+                // Calculate how many classes can be missed while staying above 80%
+                let maxLeave = 0;
+                while (((attended) / (total + maxLeave)) * 100 >= 80) {
+                    maxLeave++;
+                }
+                maxLeave--; // Reduce one to stay just above 80%
+
+                leave.innerHTML = `📌 You can take leave for <b>${maxLeave}</b> more class(es) without dropping below 80%.`;
+            } 
+            else {
+                message += "<br>⚠️ <b style='color: red;'>Low attendance! You need more classes.</b>";
+                results.style.color = "red";
+
+                // Calculate extra classes needed to reach 80%
+                let neededClasses = 0;
+                while (((attended + neededClasses) / (total + neededClasses)) * 100 < 80) {
+                    neededClasses++;
+                }
+
+                leave.innerHTML = `📌 You need to attend <b>${neededClasses}</b> more class(es) to reach 80%.`;
+            }
+
+            results.innerHTML = message;
+        }
+    </script>
+
+</body>
+</html>
